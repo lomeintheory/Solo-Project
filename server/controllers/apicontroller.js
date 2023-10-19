@@ -17,13 +17,21 @@ apiController.getEvents = (req, res) => {
     })
 }
 
-// apiController.addEvent = (req, res) => {
-//   Event.find({})
-//     .then(data => {
-//       console.log(data)
-//       res.send(data)
-//     })
-// }
+apiController.addEvent = (req, res) => {
+  console.log(req.body)
+  const event = req.body.event;
+  models.Favorite.create({
+    name: event
+  })
+  .then(data => {
+    // if (!response.ok) {
+    //   throw new Error('Network response was not ok');
+    // }
+    console.log(data)
+    res.send(data)
+  })
+  .catch(err => console.error('Error adding event to favorites', err))
+}
 
 
 module.exports = apiController;

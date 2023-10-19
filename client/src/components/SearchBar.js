@@ -2,13 +2,15 @@ import React, {useEffect, useState, Component} from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 
 
-function SearchBar() {
+function SearchBar({ searchQuery, setSearchQuery }) {
   return (
   <form action="/" method="get">
   <label htmlFor="header-search">
       <span className="visually-hidden">Search music events</span>
   </label>
   <input
+      value={searchQuery}
+      onInput={e => setSearchQuery(e.target.value)}
       type="text"
       id="header-search"
       placeholder="Search music events"

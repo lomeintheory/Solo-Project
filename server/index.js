@@ -13,19 +13,14 @@ const secret_key = process.env.APIKEY
 //     message: `Your API key was incorrect: ${api_key}`
 //   })
 // };
-
+app.use(express.json());
 // app.use('/api/users', users);
 
 app.use('/api/eventsinla', eventsInLARouter)
 
 app.get('/api', API.getEvents)
 
-app.post('/api/favorites', (req, res) => {
-  console.log(req.body)
-  const eventData = req.body;
-  models.Favorite.save(eventData);
-  res.status(200).send('Event added to favorites')
-})
+app.post('/api/favorites', API.addEvent)
 
 app.use((err, req, res, next) => {
   const defaultErr = {

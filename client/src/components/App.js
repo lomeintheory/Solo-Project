@@ -12,6 +12,8 @@ function App() {
   const query = new URLSearchParams(search).get('s')
   const [events, setEvents] = useState([]);
   const [favorites, setFavorites] = useState([]);
+  const [searchQuery, setSearchQuery] = useState(query || '');
+  const filteredEvents = filterEvents(events, searchQuery);
 
   function filterEvents(events, query) {
     if (!query) {
@@ -23,8 +25,6 @@ function App() {
     });
 };
 
-const filteredEvents = filterEvents(events, query);
-
   useEffect(() => {
     fetch('api')
       .then(response => response.json())
@@ -34,8 +34,26 @@ const filteredEvents = filterEvents(events, query);
       })
   }, [])
 
-  function addToFavs(event) {
-    setFavorites([...favorites, event])
+  function addToFavs(eventName) {
+    setFavorites([...favorites, eventName])
+    fetch('api/favorites', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        "event": eventName
+      })
+    })
+    .then(response => {
+      console.log('First response:' , response)
+      // if (!response.ok) {
+      //   throw new Error('Network response was not ok');
+      // }
+      response.json(); 
+    })
+    .then(data => console.log('Server response: ', data))
+    .catch(err => console.error('Error making post request:', err))
   }
 
   return (
@@ -46,13 +64,17 @@ const filteredEvents = filterEvents(events, query);
           <Route path="/" element={<Layout/>}/>
         </Routes>
       </Router>
-      <SearchBar />
+      <SearchBar 
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+      />
       <ul>
-        {filteredEvents.map((musicEvent) => (
-          <li key={musicEvent.ObjectId}>{musicEvent.name} 
-          <form method='POST' action='/favorites' onSubmit={ (e) => {
+        {filteredEvents.map((musicEvent, index) => (
+          <li key={index}>{musicEvent.name} / {musicEvent.dates.start.localDate}
+          <form action='/favorites' onSubmit={ (e) => {
             e.preventDefault()
-            addToFavs(musicEvent.name)
+            console.log(musicEvent.dates.start)
+            addToFavs(`${musicEvent.name} / ${musicEvent.dates.start.localDate}`)
             }}>
             <input type="submit" value="add"></input>
           </form>
