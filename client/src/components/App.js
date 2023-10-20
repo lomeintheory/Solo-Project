@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Switch, Route, Routes } from 'react-router-dom
 import SearchBar from './SearchBar';
 import Layout from './Layout';
 import Favorites from './Favorites'
-import Results from './Results';
 import Users from './User';
 
 
@@ -70,11 +69,11 @@ function App() {
       />
       <ul>
         {filteredEvents.map((musicEvent, index) => (
-          <li key={index}>{musicEvent.name} / {musicEvent.dates.start.localDate}
+          <li key={index}>{musicEvent.name} @ {musicEvent._embedded.venues[0].name} / {musicEvent.dates.start.localDate} / starts at {musicEvent.dates.start.localTime}
           <form action='/favorites' onSubmit={ (e) => {
             e.preventDefault()
-            console.log(musicEvent.dates.start)
-            addToFavs(`${musicEvent.name} / ${musicEvent.dates.start.localDate}`)
+            console.log(musicEvent._embedded.venues[0].name)
+            addToFavs(`${musicEvent.name} @ ${musicEvent._embedded.venues[0].name} / ${musicEvent.dates.start.localDate} / starts at ${musicEvent.dates.start.localTime}`)
             }}>
             <input type="submit" value="add"></input>
           </form>
